@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from "@emotion/styled"
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -62,20 +62,37 @@ const TaskItem = styled.li`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
-const DeleteButton = styled.button`
-  background: none;
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const EditInput = styled.input`
+  flex: 1;
+  padding: 0.4rem;
+  margin-right: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+`;
+
+const Button = styled.button`
+  background: ${({ color }) => color || '#007bff'};
+  color: white;
   border: none;
-  color: #dc3545;
-  font-size: 1rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
   cursor: pointer;
   &:hover {
-    color: #a71d2a;
+    opacity: 0.9;
   }
 `;
 
 export default function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState('');
+  const [editId, setEditId] = useState(null);
+  const [editText, setEditText] = useState('');
 
   const addTask = () => {
     if (!input.trim()) return;
@@ -91,6 +108,24 @@ export default function App() {
 
   const deleteTask = (id) => {
     setTasks(tasks.filter(t => t.id !== id));
+  };
+
+  const startEditing = (task) => {
+    setEditId(task.id);
+    setEditText(task.text);
+  };
+
+  const saveEdit = (id) => {
+    setTasks(tasks.map(t =>
+      t.id === id ? { ...t, text: editText } : t
+    ));
+    setEditId(null);
+    setEditText('');
+  };
+
+  const cancelEdit = () => {
+    setEditId(null);
+    setEditText('');
   };
 
   return (
@@ -111,13 +146,27 @@ export default function App() {
             completed={task.completed}
             onClick={() => toggleComplete(task.id)}
           >
-            {task.text}
-            <DeleteButton onClick={(e) => {
-              e.stopPropagation();
-              deleteTask(task.id);
-            }}>
-              ❌
-            </DeleteButton>
+            {editId === task.id ? (
+              <>
+                <EditInput
+                  value={editText}
+                  onClick={e => e.stopPropagation()}
+                  onChange={(e) => setEditText(e.target.value)}
+                />
+                <ButtonGroup onClick={e => e.stopPropagation()}>
+                  <Button color="#28a745" onClick={() => saveEdit(task.id)}>Save</Button>
+                  <Button color="#6c757d" onClick={cancelEdit}>Cancel</Button>
+                </ButtonGroup>
+              </>
+            ) : (
+              <>
+                {task.text}
+                <ButtonGroup onClick={e => e.stopPropagation()}>
+                  <Button color="#ffc107" onClick={() => startEditing(task)}>Edit</Button>
+                  <Button color="#dc3545" onClick={() => deleteTask(task.id)}>❌</Button>
+                </ButtonGroup>
+              </>
+            )}
           </TaskItem>
         ))}
       </TaskList>
