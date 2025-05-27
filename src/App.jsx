@@ -31,7 +31,7 @@ const Input = styled.input`
 
 const AddButton = styled.button`
   background: #007bff;
-  color: white;
+  color: rgba(255, 255, 255, 0.897);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
