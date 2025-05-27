@@ -77,6 +77,8 @@ const EditInput = styled.input`
 
 const Button = styled.button`
   background: ${({ color }) => color || '#007bff'};
+  border: ${({ bd }) => bd || 'none'};
+  border-color: ${({ bc }) => bc || 'none'};
   color: white;
   border: none;
   padding: 0.4rem 0.6rem;
@@ -162,8 +164,8 @@ export default function App() {
               <>
                 {task.text}
                 <ButtonGroup onClick={e => e.stopPropagation()}>
-                  <Button color="#ffc107" onClick={() => startEditing(task)}>Edit</Button>
-                  <Button color="#dc3545" onClick={() => deleteTask(task.id)}>❌</Button>
+                  <Button color="#dc3545" onClick={() => startEditing(task)}>Edit</Button>
+                  <Button  color="transparent" bd="1px solid" bc="#dc3545" onClick={() => deleteTask(task.id)}>❌</Button>
                 </ButtonGroup>
               </>
             )}
